@@ -92,6 +92,7 @@
         <div class="mission-role" id="missionRole">SITE ENGINEER</div>
         <div class="situation-box" id="missionSituation">Loading scenario…</div>
         <div class="option-list" id="missionOptions"></div>
+        <p class="mg-note">⚙️ A quick career skill-check follows your decision.</p>
       </div>
     </section>
 
@@ -191,9 +192,18 @@
   </div>
 </div>
 
+<!-- ============ CAREER SKILL-CHECK MINI-GAME OVERLAY ============ -->
+<div class="overlay" id="minigameOverlay">
+  <div class="glass minigame-card">
+    <div id="minigameBody"></div>
+    <button class="btn btn-ghost btn-block mg-skip" id="mgSkipBtn" style="margin-top:12px;">Skip skill-check</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="data.js"></script>
+<script src="minigames.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
