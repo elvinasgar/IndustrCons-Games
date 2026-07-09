@@ -333,21 +333,117 @@ function runNegotiationGame(body, onDone){
 }
 
 /* ---------------------------------------------------------------------- */
-/* Dispatcher                                                              */
+/* 6) Blueprint Memory (card-flip matching)                                */
 /* ---------------------------------------------------------------------- */
-const MINIGAME_BY_CAREER = {
-  siteEngineer:     { run: runCraneGame,       label: 'Crane Load Balance' },
-  hseOfficer:       { run: runHazardGame,      label: 'Spot the Hazard' },
-  planningEngineer: { run: runSequenceGame,    label: 'Build the Critical Path' },
-  quantitySurveyor: { run: runBudgetGame,      label: 'Balance the Budget' },
-  projectManager:   { run: runNegotiationGame, label: 'Find the Compromise' }
-};
+const MEMORY_SYMBOLS = ['🏗️','📐','🧱','🪟','🚪','🏛️'];
 
-/* The stat each career's skill-check mainly feeds, plus XP for everyone. */
-const MINIGAME_SPECIALTY = {
-  siteEngineer: 'quality',
-  hseOfficer: 'safety',
-  planningEngineer: 'time',
-  quantitySurveyor: 'budget',
-  projectManager: 'quality'
-};
+function runMemoryGame(body, onDone){
+  const pairs = shuffleArr([...MEMORY_SYMBOLS, ...MEMORY_SYMBOLS]);
+  const total = MEMORY_SYMBOLS.length;
+  let first = null, lock = false, moves = 0, matched = 0;
+
+  body.innerHTML = `
+    <div class="mg-head"><span class="mg-ic">🏛️</span><h3>Blueprint Memory</h3><span class="pill" id="mgMoves">0 moves</span></div>
+    <p class="mg-instructions">Flip two tiles at a time and match every blueprint symbol.</p>
+    <div class="mg-memory-grid" id="mgMemGrid"></div>`;
+
+  const grid = body.querySelector('#mgMemGrid');
+  pairs.forEach(sym => {
+    const tile = document.createElement('button');
+    tile.className = 'mg-memory-tile';
+    tile.dataset.sym = sym;
+    tile.textContent = '❔';
+    tile.onclick = () => {
+      if(lock || tile.classList.contains('matched') || tile === first) return;
+      tile.textContent = sym;
+      tile.classList.add('flipped');
+      if(!first){ first = tile; return; }
+      moves++;
+      body.querySelector('#mgMoves').textContent = moves + ' moves';
+      if(first.dataset.sym === tile.dataset.sym){
+        first.classList.add('matched'); tile.classList.add('matched');
+        first = null; matched++;
+        playSound('click');
+        if(matched === total) endGame();
+      } else {
+        lock = true;
+        const a = first, b = tile;
+        setTimeout(() => {
+          a.textContent = '❔'; a.classList.remove('flipped');
+          b.textContent = '❔'; b.classList.remove('flipped');
+          lock = false;
+        }, 700);
+        first = null;
+        playSound('fail');
+      }
+    };
+    grid.appendChild(tile);
+  });
+
+  function endGame(){
+    const score = clamp(Math.round(100 - (moves - total) * 6), 0, 100);
+    playSound('success');
+    setTimeout(() => onDone(score, `🏛️ Blueprint Memory: ${moves} moves · score ${score}/100`), 500);
+  }
+}
+
+/* ---------------------------------------------------------------------- */
+/* 7) Cable Pull Rhythm (repeated timed taps)                              */
+/* ---------------------------------------------------------------------- */
+function runRhythmGame(body, onDone){
+  const BEATS = 6;
+  let beatIndex = 0, totalAcc = 0, raf, pos = 0, dir = 1, speed = 1.3, ended = false;
+
+  body.innerHTML = `
+    <div class="mg-head"><span class="mg-ic">⚡</span><h3>Cable Pull Rhythm</h3><span class="pill" id="mgBeat">Beat 1/${BEATS}</span></div>
+    <p class="mg-instructions">Tap <b>PULL</b> every time the marker crosses the centre line.</p>
+    <div class="mg-track">
+      <div class="mg-center-line"></div>
+      <div class="mg-needle" id="mgRNeedle"></div>
+    </div>
+    <button class="btn btn-primary btn-block" id="mgPullBtn">🔗 PULL</button>`;
+
+  const needle = body.querySelector('#mgRNeedle');
+  const pullBtn = body.querySelector('#mgPullBtn');
+
+  function frame(){
+    pos += dir * speed;
+    if(pos >= 97){ pos = 97; dir = -1; }
+    if(pos <= 0){ pos = 0; dir = 1; }
+    needle.style.left = pos + '%';
+    raf = requestAnimationFrame(frame);
+  }
+  raf = requestAnimationFrame(frame);
+
+  pullBtn.onclick = () => {
+    if(ended) return;
+    const dist = Math.abs(pos - 50);
+    const acc = clamp(Math.round(100 - (dist / 50) * 100), 0, 100);
+    totalAcc += acc; beatIndex++;
+    playSound(acc > 60 ? 'success' : 'fail');
+    showToast(`Beat ${beatIndex}: ${acc}/100`, 900);
+    speed += 0.15;
+    if(beatIndex >= BEATS){
+      ended = true;
+      cancelAnimationFrame(raf);
+      pullBtn.disabled = true;
+      const avg = Math.round(totalAcc / BEATS);
+      setTimeout(() => onDone(avg, `⚡ Cable Pull Rhythm: ${avg}/100 timing accuracy`), 500);
+    } else {
+      body.querySelector('#mgBeat').textContent = `Beat ${beatIndex + 1}/${BEATS}`;
+    }
+  };
+}
+
+/* ---------------------------------------------------------------------- */
+/* Arcade — standalone hub, playable any time for a flat XP reward         */
+/* ---------------------------------------------------------------------- */
+const ARCADE_GAMES = [
+  { id: 'crane', icon: '🏗️', title: 'Crane Load Balance', desc: 'Stop the load indicator inside the safe zone.', run: runCraneGame },
+  { id: 'hazard', icon: '🦺', title: 'Spot the Hazard', desc: 'Find every hazard before the clock runs out.', run: runHazardGame },
+  { id: 'sequence', icon: '🗓️', title: 'Build the Critical Path', desc: 'Tap tasks into the correct construction order.', run: runSequenceGame },
+  { id: 'budget', icon: '💰', title: 'Balance the Budget', desc: 'Balance linked sliders to fit the client brief.', run: runBudgetGame },
+  { id: 'negotiation', icon: '🤝', title: 'Find the Compromise', desc: 'Hold and release the pressure at the right moment.', run: runNegotiationGame },
+  { id: 'memory', icon: '🏛️', title: 'Blueprint Memory', desc: 'Match every blueprint symbol in the fewest moves.', run: runMemoryGame },
+  { id: 'rhythm', icon: '⚡', title: 'Cable Pull Rhythm', desc: 'Tap in time with the marker for six beats straight.', run: runRhythmGame }
+];
