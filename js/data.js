@@ -50,6 +50,16 @@ const CAREERS = {
     id: 'quantitySurveyor', name: 'Quantity Surveyor', icon: '💰', accent: '#FFD700',
     frame: "As Quantity Surveyor, every option here has a price tag attached.",
     authority: 'the cost consultant', crew: 'the commercial team'
+  },
+  architect: {
+    id: 'architect', name: 'Architect', icon: '🏛️', accent: '#FF6EC7',
+    frame: "As Architect, the design intent is yours to protect under pressure.",
+    authority: 'the design review board', crew: 'the design team'
+  },
+  mepEngineer: {
+    id: 'mepEngineer', name: 'MEP Engineer', icon: '⚡', accent: '#FF9F1C',
+    frame: "As MEP Engineer, everything behind the walls has to work the first time.",
+    authority: 'the services consultant', crew: 'the MEP subcontractor'
   }
 };
 
