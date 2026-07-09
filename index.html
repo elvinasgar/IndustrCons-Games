@@ -35,6 +35,7 @@
       <div class="flex" style="flex-direction:column; gap:12px; max-width:360px; margin:22px auto 0;">
         <button class="btn btn-primary btn-block" id="btnPlay">▶ Start Career</button>
         <button class="btn btn-ghost btn-block" id="btnDailyHome">🗓️ Daily Challenge</button>
+        <button class="btn btn-ghost btn-block" id="btnArcadeHome">🎮 Arcade — Skill-Check Games</button>
         <button class="btn btn-ghost btn-block" id="btnContinue" style="display:none;">↻ Continue where you left off</button>
       </div>
 
@@ -92,7 +93,6 @@
         <div class="mission-role" id="missionRole">SITE ENGINEER</div>
         <div class="situation-box" id="missionSituation">Loading scenario…</div>
         <div class="option-list" id="missionOptions"></div>
-        <p class="mg-note">⚙️ A quick career skill-check follows your decision.</p>
       </div>
     </section>
 
@@ -167,6 +167,16 @@
         <button class="btn btn-danger" id="btnResetProgress" style="padding:10px 16px; font-size:13px;">Reset</button>
       </div>
       <p class="empty-note">IndustrCons v1.0 · 100% offline · Data stored in your browser only.</p>
+    </section>
+
+    <!-- ============ ARCADE ============ -->
+    <section class="screen" id="screen-arcade">
+      <div class="flex items-center gap-10 mb-16">
+        <button class="icon-btn" id="btnArcadeBack">←</button>
+        <div class="section-title" style="margin:0; flex:1;">Arcade — Skill-Check Games</div>
+      </div>
+      <p class="empty-note" style="padding:0 0 14px; text-align:left;">Play any game for a quick XP bonus. No mission required — practice anytime.</p>
+      <div class="career-grid" id="arcadeGrid"></div>
     </section>
 
   </main>
