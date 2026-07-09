@@ -396,8 +396,42 @@ function selectOption(i){
   applyDeltas(opt.deltas);
   updateMissionBars();
   setTimeout(() => {
-    maybeTriggerEvent(() => finishMission());
+    playCareerMinigame(session.careerId, (score, label) => {
+      applyMinigameBonus(score);
+      updateMissionBars();
+      showToast(label, 2000);
+      setTimeout(() => {
+        maybeTriggerEvent(() => finishMission());
+      }, 500);
+    });
   }, 950);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Career skill-check mini-game (see minigames.js)                        */
+/* ---------------------------------------------------------------------- */
+function playCareerMinigame(careerId, onDone){
+  const cfg = MINIGAME_BY_CAREER[careerId];
+  const overlay = document.getElementById('minigameOverlay');
+  const body = document.getElementById('minigameBody');
+  if(!cfg){ onDone(50, ''); return; }
+  overlay.classList.add('visible');
+  const skipBtn = document.getElementById('mgSkipBtn');
+  const finish = (score, label) => {
+    overlay.classList.remove('visible');
+    skipBtn.onclick = null;
+    onDone(score, label);
+  };
+  skipBtn.onclick = () => finish(50, `${cfg.label} skipped.`);
+  cfg.run(body, finish);
+}
+
+function applyMinigameBonus(score){
+  const bonusXP = Math.round((score / 100) * 20);
+  const stat = MINIGAME_SPECIALTY[session.careerId] || 'quality';
+  const bonusStat = Math.round(((score - 50) / 50) * 10); // roughly -10..+10
+  session.xpEarned += bonusXP;
+  session.runStats[stat] = clamp(session.runStats[stat] + bonusStat, 0, 100);
 }
 
 function maybeTriggerEvent(cb){
