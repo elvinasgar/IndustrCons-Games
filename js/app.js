@@ -26,6 +26,7 @@ function defaultState(){
     achievementsUnlocked: [],
     daily: { lastDate: null, streakCount: 0 },
     settings: { sound: true },
+    arcadeBest: {},
     stats: { missionsCompleted: 0, maxSafety: 0, maxBudget: 0, maxTime: 0, maxQuality: 0, threeStarCount: 0 }
   };
 }
@@ -50,6 +51,7 @@ function loadState(){
     merged.stats = Object.assign({}, base.stats, parsed.stats || {});
     merged.daily = Object.assign({}, base.daily, parsed.daily || {});
     merged.settings = Object.assign({}, base.settings, parsed.settings || {});
+    merged.arcadeBest = Object.assign({}, parsed.arcadeBest || {});
     return merged;
   }catch(e){
     console.warn('IndustrCons: save data unreadable, starting fresh.', e);
@@ -396,42 +398,62 @@ function selectOption(i){
   applyDeltas(opt.deltas);
   updateMissionBars();
   setTimeout(() => {
-    playCareerMinigame(session.careerId, (score, label) => {
-      applyMinigameBonus(score);
-      updateMissionBars();
-      showToast(label, 2000);
-      setTimeout(() => {
-        maybeTriggerEvent(() => finishMission());
-      }, 500);
-    });
+    maybeTriggerEvent(() => finishMission());
   }, 950);
 }
 
 /* ---------------------------------------------------------------------- */
-/* Career skill-check mini-game (see minigames.js)                        */
+/* ARCADE — standalone mini-games, playable any time (see minigames.js)    */
 /* ---------------------------------------------------------------------- */
-function playCareerMinigame(careerId, onDone){
-  const cfg = MINIGAME_BY_CAREER[careerId];
-  const overlay = document.getElementById('minigameOverlay');
-  const body = document.getElementById('minigameBody');
-  if(!cfg){ onDone(50, ''); return; }
-  overlay.classList.add('visible');
-  const skipBtn = document.getElementById('mgSkipBtn');
-  const finish = (score, label) => {
-    overlay.classList.remove('visible');
-    skipBtn.onclick = null;
-    onDone(score, label);
-  };
-  skipBtn.onclick = () => finish(50, `${cfg.label} skipped.`);
-  cfg.run(body, finish);
+function goArcade(){
+  playSound('nav');
+  renderArcade();
+  showScreen('arcade');
 }
 
-function applyMinigameBonus(score){
-  const bonusXP = Math.round((score / 100) * 20);
-  const stat = MINIGAME_SPECIALTY[session.careerId] || 'quality';
-  const bonusStat = Math.round(((score - 50) / 50) * 10); // roughly -10..+10
-  session.xpEarned += bonusXP;
-  session.runStats[stat] = clamp(session.runStats[stat] + bonusStat, 0, 100);
+function renderArcade(){
+  const grid = document.getElementById('arcadeGrid');
+  grid.innerHTML = '';
+  ARCADE_GAMES.forEach(g => {
+    const best = (STATE.arcadeBest && STATE.arcadeBest[g.id]) || 0;
+    const card = document.createElement('div');
+    card.className = 'glass arcade-card';
+    card.innerHTML = `
+      <div class="cicon">${g.icon}</div>
+      <div class="cinfo">
+        <h3>${g.title}</h3>
+        <p>${g.desc}</p>
+        <div class="clevel">Best: ${best}/100</div>
+      </div>
+      <div class="arrow">▶</div>`;
+    card.onclick = () => playArcadeGame(g.id);
+    grid.appendChild(card);
+  });
+}
+
+function playArcadeGame(gameId){
+  const game = ARCADE_GAMES.find(g => g.id === gameId);
+  if(!game) return;
+  const overlay = document.getElementById('minigameOverlay');
+  const body = document.getElementById('minigameBody');
+  const skipBtn = document.getElementById('mgSkipBtn');
+  overlay.classList.add('visible');
+  skipBtn.style.display = 'none';
+  const finish = (score, label) => {
+    overlay.classList.remove('visible');
+    skipBtn.style.display = '';
+    if(!STATE.arcadeBest) STATE.arcadeBest = {};
+    STATE.arcadeBest[gameId] = Math.max(STATE.arcadeBest[gameId] || 0, score);
+    const gain = Math.round((score / 100) * 25);
+    STATE.totalXP += gain;
+    const newly = checkAchievements();
+    saveState();
+    playSound(score >= 70 ? 'success' : 'fail');
+    showToast(`${label} · +${gain} XP`, 2400);
+    newly.forEach(a => setTimeout(() => showToast(`🏅 ${a.name} unlocked!`, 2400), 700));
+    renderArcade();
+  };
+  game.run(body, finish);
 }
 
 function maybeTriggerEvent(cb){
@@ -666,6 +688,8 @@ function wireStaticEvents(){
 
   document.getElementById('btnPlay').onclick = () => goTo('careers');
   document.getElementById('btnDailyHome').onclick = () => goTo('daily');
+  document.getElementById('btnArcadeHome').onclick = () => goArcade();
+  document.getElementById('btnArcadeBack').onclick = () => goTo('home');
 
   document.getElementById('soundToggle').onclick = () => {
     ensureAudio();
