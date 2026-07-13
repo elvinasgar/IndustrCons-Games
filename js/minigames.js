@@ -436,6 +436,118 @@ function runRhythmGame(body, onDone){
 }
 
 /* ---------------------------------------------------------------------- */
+/* 8) Whack-a-Leak (fast-reaction, dynamically appearing targets)          */
+/* ---------------------------------------------------------------------- */
+function runWhackGame(body, onDone){
+  const ROUNDS = 8;
+  let round = 0, hits = 0, timeoutId;
+
+  body.innerHTML = `
+    <div class="mg-head"><span class="mg-ic">🚰</span><h3>Whack-a-Leak</h3><span class="pill" id="mgWCount">0/${ROUNDS}</span></div>
+    <p class="mg-instructions">Tap the leak the instant it appears — it gets faster each round.</p>
+    <div class="mg-hazard-grid" id="mgWGrid"></div>`;
+
+  const grid = body.querySelector('#mgWGrid');
+  const cells = [];
+  for(let i = 0; i < 9; i++){
+    const c = document.createElement('button');
+    c.className = 'mg-hazard-item';
+    c.dataset.active = '0';
+    c.onclick = () => {
+      if(c.dataset.active !== '1') return;
+      hits++;
+      c.dataset.active = '0';
+      c.classList.add('correct');
+      c.textContent = '✅';
+      clearTimeout(timeoutId);
+      setTimeout(() => { c.classList.remove('correct'); c.textContent = ''; nextRound(); }, 300);
+    };
+    grid.appendChild(c); cells.push(c);
+  }
+
+  function nextRound(){
+    round++;
+    body.querySelector('#mgWCount').textContent = `${Math.min(round, ROUNDS)}/${ROUNDS}`;
+    if(round > ROUNDS){ endGame(); return; }
+    const idx = Math.floor(Math.random() * 9);
+    cells[idx].dataset.active = '1';
+    cells[idx].textContent = '🚰';
+    const showTime = Math.max(450, 950 - round * 55);
+    timeoutId = setTimeout(() => {
+      if(cells[idx].dataset.active === '1'){
+        cells[idx].dataset.active = '0'; cells[idx].textContent = '';
+        nextRound();
+      }
+    }, showTime);
+  }
+
+  function endGame(){
+    const score = clamp(Math.round((hits / ROUNDS) * 100), 0, 100);
+    playSound(score >= 70 ? 'success' : 'fail');
+    setTimeout(() => onDone(score, `🚰 Whack-a-Leak: ${hits}/${ROUNDS} caught · score ${score}/100`), 400);
+  }
+  nextRound();
+}
+
+/* ---------------------------------------------------------------------- */
+/* 9) Quick Takeoff (mental-math multiple choice under a timer)           */
+/* ---------------------------------------------------------------------- */
+function runTallyGame(body, onDone){
+  const ROUNDS = 4;
+  let round = 0, correct = 0, timerInt;
+
+  function nextRound(){
+    round++;
+    if(round > ROUNDS){ endGame(); return; }
+    const a = Math.floor(Math.random() * 8 + 2), b = Math.floor(Math.random() * 8 + 2);
+    const answer = a * b;
+    const opts = shuffleArr([answer, Math.max(1, answer + 4), Math.max(1, answer - 6), Math.max(1, answer + 9)]);
+    let timeLeft = 6;
+
+    body.innerHTML = `
+      <div class="mg-head"><span class="mg-ic">🧮</span><h3>Quick Takeoff</h3><span class="pill">Round ${round}/${ROUNDS}</span></div>
+      <p class="mg-instructions">Panel needs <b>${a}m × ${b}m</b> of material. Tap the correct total area (m²).</p>
+      <div class="mg-track" style="height:8px;">
+        <div class="mg-zone" id="mgTBar" style="left:0; width:100%; background:rgba(0,229,255,.35); border:none;"></div>
+      </div>
+      <div class="option-list" id="mgTOpts" style="margin-top:12px;"></div>`;
+
+    const optsEl = body.querySelector('#mgTOpts');
+    opts.forEach(v => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.innerHTML = `<div class="opt-label">${v} m²</div>`;
+      btn.onclick = () => {
+        clearInterval(timerInt);
+        optsEl.querySelectorAll('button').forEach(b => b.style.pointerEvents = 'none');
+        if(v === answer){ correct++; playSound('click'); } else { playSound('fail'); }
+        setTimeout(nextRound, 500);
+      };
+      optsEl.appendChild(btn);
+    });
+
+    const bar = body.querySelector('#mgTBar');
+    timerInt = setInterval(() => {
+      timeLeft -= 0.2;
+      bar.style.width = Math.max(0, (timeLeft / 6) * 100) + '%';
+      if(timeLeft <= 0){
+        clearInterval(timerInt);
+        optsEl.querySelectorAll('button').forEach(b => b.style.pointerEvents = 'none');
+        playSound('fail');
+        setTimeout(nextRound, 500);
+      }
+    }, 200);
+  }
+
+  function endGame(){
+    const score = clamp(Math.round((correct / ROUNDS) * 100), 0, 100);
+    playSound(score >= 70 ? 'success' : 'fail');
+    onDone(score, `🧮 Quick Takeoff: ${correct}/${ROUNDS} correct · score ${score}/100`);
+  }
+  nextRound();
+}
+
+/* ---------------------------------------------------------------------- */
 /* Arcade — standalone hub, playable any time for a flat XP reward         */
 /* ---------------------------------------------------------------------- */
 const ARCADE_GAMES = [
@@ -445,5 +557,7 @@ const ARCADE_GAMES = [
   { id: 'budget', icon: '💰', title: 'Balance the Budget', desc: 'Balance linked sliders to fit the client brief.', run: runBudgetGame },
   { id: 'negotiation', icon: '🤝', title: 'Find the Compromise', desc: 'Hold and release the pressure at the right moment.', run: runNegotiationGame },
   { id: 'memory', icon: '🏛️', title: 'Blueprint Memory', desc: 'Match every blueprint symbol in the fewest moves.', run: runMemoryGame },
-  { id: 'rhythm', icon: '⚡', title: 'Cable Pull Rhythm', desc: 'Tap in time with the marker for six beats straight.', run: runRhythmGame }
+  { id: 'rhythm', icon: '⚡', title: 'Cable Pull Rhythm', desc: 'Tap in time with the marker for six beats straight.', run: runRhythmGame },
+  { id: 'whack', icon: '🚰', title: 'Whack-a-Leak', desc: 'Tap each leak the instant it appears.', run: runWhackGame },
+  { id: 'tally', icon: '🧮', title: 'Quick Takeoff', desc: 'Solve fast material takeoffs before time runs out.', run: runTallyGame }
 ];
