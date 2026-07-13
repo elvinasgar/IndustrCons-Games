@@ -313,6 +313,18 @@ main{ flex:1; position:relative; padding:18px 16px 28px; max-width:640px; margin
 .mg-slider{ width:100%; accent-color:var(--cyan); height:20px; }
 .mg-match{ text-align:center; font-family:'JetBrains Mono'; color:var(--cyan); margin:8px 0 4px; font-size:12.5px; }
 
+/* ---------- Ecosystem cross-links (end-of-game recommendations) ---------- */
+.eco-panel{ padding:16px; margin:18px 0; }
+.eco-title{ font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-dim); margin-bottom:10px; }
+.eco-link{ display:flex; align-items:center; gap:10px; padding:10px 8px; border-radius:10px; text-decoration:none; color:var(--text); transition:background .2s var(--ease); }
+.eco-link:hover{ background:rgba(0,229,255,.06); }
+.eco-link + .eco-link{ border-top:1px solid var(--border-soft); }
+.eco-ic{ font-size:20px; flex-shrink:0; }
+.eco-text{ flex:1; min-width:0; display:flex; flex-direction:column; }
+.eco-text b{ font-size:13.5px; color:#fff; }
+.eco-text span{ font-size:11.5px; color:var(--text-dim); margin-top:1px; }
+.eco-arrow{ color:var(--cyan); font-size:14px; flex-shrink:0; }
+
 /* ---------- Arcade hub ---------- */
 .arcade-card{ display:flex; align-items:center; gap:14px; padding:16px; cursor:pointer; transition:transform .2s var(--ease), border-color .2s; }
 .arcade-card:hover{ transform:translateY(-2px); border-color:var(--cyan); }
