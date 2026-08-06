@@ -551,13 +551,22 @@ function runTallyGame(body, onDone){
 /* Arcade — standalone hub, playable any time for a flat XP reward         */
 /* ---------------------------------------------------------------------- */
 const ARCADE_GAMES = [
-  { id: 'crane', icon: '🏗️', title: 'Crane Load Balance', desc: 'Stop the load indicator inside the safe zone.', run: runCraneGame },
-  { id: 'hazard', icon: '🦺', title: 'Spot the Hazard', desc: 'Find every hazard before the clock runs out.', run: runHazardGame },
-  { id: 'sequence', icon: '🗓️', title: 'Build the Critical Path', desc: 'Tap tasks into the correct construction order.', run: runSequenceGame },
-  { id: 'budget', icon: '💰', title: 'Balance the Budget', desc: 'Balance linked sliders to fit the client brief.', run: runBudgetGame },
-  { id: 'negotiation', icon: '🤝', title: 'Find the Compromise', desc: 'Hold and release the pressure at the right moment.', run: runNegotiationGame },
-  { id: 'memory', icon: '🏛️', title: 'Blueprint Memory', desc: 'Match every blueprint symbol in the fewest moves.', run: runMemoryGame },
-  { id: 'rhythm', icon: '⚡', title: 'Cable Pull Rhythm', desc: 'Tap in time with the marker for six beats straight.', run: runRhythmGame },
-  { id: 'whack', icon: '🚰', title: 'Whack-a-Leak', desc: 'Tap each leak the instant it appears.', run: runWhackGame },
-  { id: 'tally', icon: '🧮', title: 'Quick Takeoff', desc: 'Solve fast material takeoffs before time runs out.', run: runTallyGame }
+  { id: 'crane', icon: '🏗️', title: 'Crane Load Balance', desc: 'Stop the load indicator inside the safe zone.', run: runCraneGame,
+    difficulty: 'Easy', estMinutes: '~1 min', skills: ['Reflexes', 'Precision'], rating: 4.6, players: '6.1K' },
+  { id: 'hazard', icon: '🦺', title: 'Spot the Hazard', desc: 'Find every hazard before the clock runs out.', run: runHazardGame,
+    difficulty: 'Easy', estMinutes: '~1 min', skills: ['Observation', 'Hazard ID'], rating: 4.8, players: '7.4K' },
+  { id: 'sequence', icon: '🗓️', title: 'Build the Critical Path', desc: 'Tap tasks into the correct construction order.', run: runSequenceGame,
+    difficulty: 'Medium', estMinutes: '~2 min', skills: ['Sequencing', 'Logic'], rating: 4.5, players: '4.9K' },
+  { id: 'budget', icon: '💰', title: 'Balance the Budget', desc: 'Balance linked sliders to fit the client brief.', run: runBudgetGame,
+    difficulty: 'Medium', estMinutes: '~2 min', skills: ['Cost Control', 'Estimation'], rating: 4.4, players: '4.2K' },
+  { id: 'negotiation', icon: '🤝', title: 'Find the Compromise', desc: 'Hold and release the pressure at the right moment.', run: runNegotiationGame,
+    difficulty: 'Medium', estMinutes: '~1 min', skills: ['Timing', 'Negotiation'], rating: 4.5, players: '3.8K' },
+  { id: 'memory', icon: '🏛️', title: 'Blueprint Memory', desc: 'Match every blueprint symbol in the fewest moves.', run: runMemoryGame,
+    difficulty: 'Easy', estMinutes: '~2 min', skills: ['Memory', 'Focus'], rating: 4.7, players: '5.5K' },
+  { id: 'rhythm', icon: '⚡', title: 'Cable Pull Rhythm', desc: 'Tap in time with the marker for six beats straight.', run: runRhythmGame,
+    difficulty: 'Hard', estMinutes: '~1 min', skills: ['Rhythm', 'Reflexes'], rating: 4.3, players: '3.1K' },
+  { id: 'whack', icon: '🚰', title: 'Whack-a-Leak', desc: 'Tap each leak the instant it appears.', run: runWhackGame,
+    difficulty: 'Hard', estMinutes: '~1 min', skills: ['Reaction Speed'], rating: 4.6, players: '4.0K' },
+  { id: 'tally', icon: '🧮', title: 'Quick Takeoff', desc: 'Solve fast material takeoffs before time runs out.', run: runTallyGame,
+    difficulty: 'Medium', estMinutes: '~1 min', skills: ['Mental Math', 'Estimation'], rating: 4.4, players: '3.6K' }
 ];
