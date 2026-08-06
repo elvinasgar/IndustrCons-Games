@@ -29,37 +29,58 @@ const CAREERS = {
   siteEngineer: {
     id: 'siteEngineer', name: 'Site Engineer', icon: '👷', accent: '#00E5FF',
     frame: "As Site Engineer you're closest to the work — the crew looks to you first.",
-    authority: 'the structural engineer', crew: 'your site team'
+    authority: 'the structural engineer', crew: 'your site team',
+    tagline: 'Construction Simulator', difficulty: 'Intermediate', estMinutes: '3–4 min / stage',
+    skills: ['Site Supervision', 'Risk Judgement', 'Crew Coordination'], rating: 4.8, players: '12.4K',
+    mentorTip: "Start here — it's the most direct read on day-to-day site trade-offs."
   },
   projectManager: {
     id: 'projectManager', name: 'Project Manager', icon: '📋', accent: '#7C4DFF',
     frame: "As Project Manager, the client and the schedule are both watching this decision.",
-    authority: 'the client', crew: 'the project team'
+    authority: 'the client', crew: 'the project team',
+    tagline: 'Project Management Simulator', difficulty: 'Advanced', estMinutes: '4–5 min / stage',
+    skills: ['Stakeholder Management', 'Negotiation', 'Programme Control'], rating: 4.7, players: '9.8K',
+    mentorTip: "Every option here trades client trust against schedule — read the room."
   },
   hseOfficer: {
     id: 'hseOfficer', name: 'HSE Officer', icon: '🦺', accent: '#FF6B35',
     frame: "As HSE Officer, the wellbeing of every worker on site sits with you.",
-    authority: 'the safety committee', crew: 'the workforce'
+    authority: 'the safety committee', crew: 'the workforce',
+    tagline: 'Safety Escape Room', difficulty: 'Intermediate', estMinutes: '3 min / stage',
+    skills: ['Hazard Recognition', 'Incident Response', 'Compliance'], rating: 4.9, players: '11.1K',
+    mentorTip: "The highest-rated track — safety calls rarely have a clean answer."
   },
   planningEngineer: {
     id: 'planningEngineer', name: 'Planning Engineer', icon: '🗓️', accent: '#00FFA3',
     frame: "As Planning Engineer, one slip here ripples down the entire critical path.",
-    authority: 'the programme review board', crew: 'the planning team'
+    authority: 'the programme review board', crew: 'the planning team',
+    tagline: 'Scheduling Challenge', difficulty: 'Advanced', estMinutes: '4 min / stage',
+    skills: ['Critical Path Method', 'Sequencing', 'Forecasting'], rating: 4.6, players: '7.3K',
+    mentorTip: "Pairs well with Quantity Surveyor — schedule and cost are the same fight."
   },
   quantitySurveyor: {
     id: 'quantitySurveyor', name: 'Quantity Surveyor', icon: '💰', accent: '#FFD700',
     frame: "As Quantity Surveyor, every option here has a price tag attached.",
-    authority: 'the cost consultant', crew: 'the commercial team'
+    authority: 'the cost consultant', crew: 'the commercial team',
+    tagline: 'Quantity Survey Challenge', difficulty: 'Advanced', estMinutes: '4 min / stage',
+    skills: ['Cost Control', 'Variation Management', 'Commercial Strategy'], rating: 4.7, players: '8.6K',
+    mentorTip: "Watch the Budget bar closely — this track punishes short-term thinking."
   },
   architect: {
     id: 'architect', name: 'Architect', icon: '🏛️', accent: '#FF6EC7',
     frame: "As Architect, the design intent is yours to protect under pressure.",
-    authority: 'the design review board', crew: 'the design team'
+    authority: 'the design review board', crew: 'the design team',
+    tagline: 'BIM Puzzle', difficulty: 'Intermediate', estMinutes: '3–4 min / stage',
+    skills: ['Design Coordination', 'Clash Resolution', 'Detailing'], rating: 4.5, players: '5.9K',
+    mentorTip: "New track — great if you enjoyed the Blueprint Memory arcade game."
   },
   mepEngineer: {
     id: 'mepEngineer', name: 'MEP Engineer', icon: '⚡', accent: '#FF9F1C',
     frame: "As MEP Engineer, everything behind the walls has to work the first time.",
-    authority: 'the services consultant', crew: 'the MEP subcontractor'
+    authority: 'the services consultant', crew: 'the MEP subcontractor',
+    tagline: 'Engineering Escape Game', difficulty: 'Advanced', estMinutes: '4 min / stage',
+    skills: ['Systems Coordination', 'Fault Diagnosis', 'Commissioning'], rating: 4.6, players: '5.2K',
+    mentorTip: "New track — the toughest technical calls in the whole roster."
   }
 };
 
@@ -299,4 +320,38 @@ const LEADERBOARD_SEED = [
   { name: 'S. Rzayeva', role: 'Site Engineer', xp: 2790 },
   { name: 'E. Novruzov', role: 'Project Manager', xp: 2340 },
   { name: 'M. Bagirova', role: 'HSE Officer', xp: 1890 }
+];
+
+/* ---------------------------------------------------------------------- */
+/* Weekly Tournament / Monthly Championship — meta-progression objectives  */
+/* Tracked against existing counters, no new content needed to be fair.    */
+/* ---------------------------------------------------------------------- */
+const WEEKLY_OBJECTIVES = [
+  { id: 'w_missions3', title: 'Weekly Tournament: On Site', desc: 'Complete 3 missions this week.', target: 3, metric: 'missionsThisWeek', rewardCoins: 150, rewardGems: 1, rewardXP: 60 },
+  { id: 'w_missions6', title: 'Weekly Tournament: Full Crew', desc: 'Complete 6 missions this week.', target: 6, metric: 'missionsThisWeek', rewardCoins: 320, rewardGems: 2, rewardXP: 120 },
+  { id: 'w_arcade3', title: 'Weekly Tournament: Arcade Run', desc: 'Play 3 Arcade skill-checks this week.', target: 3, metric: 'arcadeThisWeek', rewardCoins: 120, rewardGems: 1, rewardXP: 40 }
+];
+const MONTHLY_OBJECTIVES = [
+  { id: 'm_missions12', title: 'Monthly Championship: Consistency', desc: 'Complete 12 missions this month.', target: 12, metric: 'missionsThisMonth', rewardCoins: 600, rewardGems: 4, rewardXP: 300 },
+  { id: 'm_threestar3', title: 'Monthly Championship: Excellence', desc: 'Earn 3-star ratings on 3 missions this month.', target: 3, metric: 'threeStarThisMonth', rewardCoins: 500, rewardGems: 5, rewardXP: 250 },
+  { id: 'm_level', title: 'Monthly Championship: Level Up', desc: 'Gain 3 player levels this month.', target: 3, metric: 'levelsThisMonth', rewardCoins: 800, rewardGems: 6, rewardXP: 400 }
+];
+
+/* ---------------------------------------------------------------------- */
+/* Cosmetic unlocks — purely local flavor, no gameplay effect               */
+/* ---------------------------------------------------------------------- */
+const AVATAR_FRAMES = [
+  { id: 'default', name: 'Standard', unlock: null, cssClass: 'frame-default' },
+  { id: 'bronze', name: 'Bronze Site Badge', unlock: { type: 'xp', value: 500 }, cssClass: 'frame-bronze' },
+  { id: 'silver', name: 'Silver Foreman', unlock: { type: 'xp', value: 2000 }, cssClass: 'frame-silver' },
+  { id: 'gold', name: 'Gold Chief Engineer', unlock: { type: 'xp', value: 5000 }, cssClass: 'frame-gold' },
+  { id: 'perfect', name: 'Perfectionist Frame', unlock: { type: 'achievement', value: 'perfectionist' }, cssClass: 'frame-perfect' },
+  { id: 'grand', name: 'Grand Engineer Frame', unlock: { type: 'achievement', value: 'grand_engineer' }, cssClass: 'frame-grand' }
+];
+
+const THEME_SKINS = [
+  { id: 'industrial', name: 'Industrial (default)', unlock: null, accent: '#FFC400', accent2: '#00E5FF' },
+  { id: 'blueprint', name: 'Blueprint Cyan', unlock: { type: 'xp', value: 1000 }, accent: '#00E5FF', accent2: '#7C4DFF' },
+  { id: 'safety', name: 'Safety Orange', unlock: { type: 'xp', value: 3000 }, accent: '#FF6B35', accent2: '#FFC400' },
+  { id: 'emerald', name: 'Emerald Site', unlock: { type: 'achievement', value: 'grand_engineer' }, accent: '#00FFA3', accent2: '#FFC400' }
 ];
