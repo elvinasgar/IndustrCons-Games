@@ -141,6 +141,7 @@
       <div class="lvl" id="lvlRing" style="--pct:0%"><span id="lvlNum">1</span></div>
       <span id="xpChipText">0 XP</span>
     </div>
+    <button class="icon-btn" id="themeToggle" title="Toggle theme">🌙</button>
     <button class="icon-btn" id="soundToggle" title="Toggle sound">🔊</button>
   </header>
 
@@ -148,17 +149,78 @@
 
     <!-- ============ HOME ============ -->
     <section class="screen" id="screen-home">
-      <div class="hero">
-        <div class="logo">🏗️</div>
-        <h1>Build Your <span class="accent">Career</span>.<br>Face the Site.</h1>
-        <p>A construction engineering simulator — real decisions, real trade-offs. No quizzes, just the job.</p>
+
+      <!-- Featured carousel -->
+      <div class="carousel-wrap glass" id="carouselWrap">
+        <div class="carousel-track" id="carouselTrack">
+          <div class="carousel-slide">
+            <div class="cs-eyebrow">Featured</div>
+            <h2>Build Your Career. Face the Site.</h2>
+            <p>Real construction decisions, real trade-offs. No quizzes — just the job.</p>
+            <button class="btn btn-primary" id="btnPlayHero">▶ Start Career</button>
+          </div>
+          <div class="carousel-slide">
+            <div class="cs-eyebrow">🗓️ Daily Challenge</div>
+            <h2>A New Dilemma, Every Day</h2>
+            <p>One sharp scenario a day. Keep your streak alive for bonus XP.</p>
+            <button class="btn btn-primary" id="btnDailyHero">Play Today's Challenge</button>
+          </div>
+          <div class="carousel-slide">
+            <div class="cs-eyebrow">🎮 Arcade</div>
+            <h2>9 Skill-Check Mini-Games</h2>
+            <p>Quick reflex, memory and estimation games — practice anytime for XP.</p>
+            <button class="btn btn-primary" id="btnArcadeHero">Open Arcade</button>
+          </div>
+          <div class="carousel-slide">
+            <div class="cs-eyebrow">🆕 New Careers</div>
+            <h2>Architect &amp; MEP Engineer</h2>
+            <p>Two new 9-stage career tracks just landed. Go find out what breaks first.</p>
+            <button class="btn btn-primary" id="btnCareersHero">Browse Careers</button>
+          </div>
+        </div>
+        <div class="carousel-dots" id="carouselDots"></div>
       </div>
-      <div class="flex" style="flex-direction:column; gap:12px; max-width:360px; margin:22px auto 0;">
-        <button class="btn btn-primary btn-block" id="btnPlay">▶ Start Career</button>
-        <button class="btn btn-ghost btn-block" id="btnDailyHome">🗓️ Daily Challenge</button>
-        <button class="btn btn-ghost btn-block" id="btnArcadeHome">🎮 Arcade — Skill-Check Games</button>
+
+      <!-- Player profile bar -->
+      <div class="profile-bar glass" id="profileBar">
+        <div class="profile-avatar" id="profileAvatar">👷</div>
+        <div class="profile-info">
+          <div class="pname" id="profileName">Engineer</div>
+          <div class="plevel" id="profileLevelText">Level 1 · 0 XP</div>
+        </div>
+        <div class="profile-currencies">
+          <div class="currency-chip coins">🪙 <span id="profileCoins">0</span></div>
+          <div class="currency-chip gems">💎 <span id="profileGems">0</span></div>
+        </div>
+      </div>
+
+      <!-- Daily login reward -->
+      <div class="glass" style="padding:14px 16px; margin-bottom:18px; display:flex; align-items:center; gap:12px;" id="loginRewardCard">
+        <div style="font-size:26px;">🎁</div>
+        <div style="flex:1;">
+          <div style="font-size:13.5px; font-weight:700; color:#fff;">Daily Login Reward</div>
+          <div style="font-size:11.5px; color:var(--text-dim);" id="loginRewardSub">Claim today's coins</div>
+        </div>
+        <button class="btn btn-gold" id="btnClaimLogin" style="padding:9px 16px; font-size:12.5px;">Claim</button>
+      </div>
+
+      <div class="flex" style="flex-direction:column; gap:12px; max-width:360px; margin:0 auto 22px;">
+        <button class="btn btn-ghost btn-block" id="btnDashboardHome">📊 Dashboard &amp; Analytics</button>
+        <button class="btn btn-ghost btn-block" id="btnMultiplayerHome">👥 Multiplayer &amp; Clans</button>
         <button class="btn btn-ghost btn-block" id="btnContinue" style="display:none;">↻ Continue where you left off</button>
       </div>
+
+      <div class="section-title" id="continueRowTitle" style="display:none;">Continue Learning</div>
+      <div class="hrow" id="continueRow" style="display:none;"></div>
+
+      <div class="section-title">Trending Games</div>
+      <div class="hrow" id="trendingRow"></div>
+
+      <div class="section-title">New Releases</div>
+      <div class="hrow" id="newReleasesRow"></div>
+
+      <div class="section-title" id="recentRowTitle" style="display:none;">Recently Played</div>
+      <div class="hrow" id="recentRow" style="display:none;"></div>
 
       <div class="section-title">Your Progress</div>
       <div class="glass" style="padding:16px;">
@@ -185,7 +247,7 @@
     <!-- ============ CAREER SELECT ============ -->
     <section class="screen" id="screen-careers">
       <div class="section-title" style="margin-top:6px;">Choose Your Career</div>
-      <div class="career-grid" id="careerGrid"></div>
+      <div id="careerGrid"></div>
     </section>
 
     <!-- ============ MISSION MAP ============ -->
@@ -250,6 +312,7 @@
       </div>
 
       <div class="result-actions">
+        <button class="btn btn-gold btn-block" id="btnViewCertificate" style="display:none;">🎓 View Certificate</button>
         <button class="btn btn-gold btn-block" id="btnNextMission">Next Mission →</button>
         <button class="btn btn-ghost btn-block" id="btnBackToMap">🗺️ Back to Mission Map</button>
       </div>
@@ -270,6 +333,12 @@
         <h3 style="color:var(--gold); margin-top:8px;">Today's challenge complete</h3>
         <p style="color:var(--text-dim); font-size:13.5px; margin-top:6px;">Come back tomorrow for a new dilemma.</p>
       </div>
+
+      <div class="section-title">🏆 Weekly Tournament</div>
+      <div id="weeklyList"></div>
+
+      <div class="section-title">🎖️ Monthly Championship</div>
+      <div id="monthlyList"></div>
 
       <div class="eco-panel glass">
         <div class="eco-title">🔗 Explore the IndustrCons Ecosystem</div>
@@ -305,6 +374,8 @@
         <div class="sinfo"><b>Sound effects</b><span>Clicks, success and alert tones</span></div>
         <div class="switch" id="settingsSoundSwitch"></div>
       </div>
+      <div class="section-title" style="margin-top:20px;">Unlockable Skins</div>
+      <div id="skinList"></div>
       <div class="glass settings-row">
         <div class="sinfo"><b>Player callsign</b><span>Shown on the leaderboard</span></div>
         <input id="playerNameInput" maxlength="18" style="background:rgba(255,255,255,.06); border:1px solid var(--border-soft); border-radius:8px; color:#fff; padding:8px 10px; width:140px; font-family:'Rajdhani'; font-weight:600;">
@@ -323,7 +394,7 @@
         <div class="section-title" style="margin:0; flex:1;">Arcade — Skill-Check Games</div>
       </div>
       <p class="empty-note" style="padding:0 0 14px; text-align:left;">Play any game for a quick XP bonus. No mission required — practice anytime.</p>
-      <div class="career-grid" id="arcadeGrid"></div>
+      <div id="arcadeGrid"></div>
 
       <div class="eco-panel glass">
         <div class="eco-title">🔗 Explore the IndustrCons Ecosystem</div>
@@ -337,6 +408,88 @@
           <span class="eco-ic">🤖</span><span class="eco-text"><b>Ask IndustrCons AI</b><span>Get help finding the right tool</span></span><span class="eco-arrow">↗</span>
         </a>
       </div>
+    </section>
+
+    <!-- ============ DASHBOARD ============ -->
+    <section class="screen" id="screen-dashboard">
+      <div class="flex items-center gap-10 mb-16">
+        <button class="icon-btn" id="btnDashboardBack">←</button>
+        <div class="section-title" style="margin:0; flex:1;">Dashboard &amp; Analytics</div>
+      </div>
+
+      <div class="dash-section">
+        <div class="reco-card glass mb-16" id="recoCard">
+          <div class="rc-icon">💡</div>
+          <div><b style="display:block; color:#fff; font-size:13.5px;">Recommended Next</b><span id="recoText" style="font-size:12px; color:var(--text-dim);">Play a mission to get a personalized tip.</span></div>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <div class="section-title" style="margin-top:0;">Activity Heatmap — last 70 days</div>
+        <div class="glass" style="padding:14px;">
+          <div class="heatmap-grid" id="heatmapGrid"></div>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <div class="section-title">Skills Radar</div>
+        <div class="glass radar-wrap">
+          <svg id="radarChart" width="240" height="240" viewBox="0 0 240 240"></svg>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <div class="section-title">Learning Timeline</div>
+        <div class="glass" style="padding:8px 16px;" id="timelineList"></div>
+      </div>
+    </section>
+
+    <!-- ============ MULTIPLAYER ============ -->
+    <section class="screen" id="screen-multiplayer">
+      <div class="flex items-center gap-10 mb-16">
+        <button class="icon-btn" id="btnMultiplayerBack">←</button>
+        <div class="section-title" style="margin:0; flex:1;">Multiplayer &amp; Clans</div>
+      </div>
+      <p class="empty-note" style="padding:0 0 14px; text-align:left;">These features need real user accounts and a live server to connect players — honestly not something a static site can do. Here's what's planned:</p>
+
+      <div class="glass soon-card mb-12"><div class="sc-icon">🔒</div><div class="sc-info"><h3>Private Rooms</h3><p>Play missions together with an invite code.</p></div><span class="soon-badge">Coming Soon</span></div>
+      <div class="glass soon-card mb-12"><div class="sc-icon">👥</div><div class="sc-info"><h3>Friends List</h3><p>Add teammates and compare progress.</p></div><span class="soon-badge">Coming Soon</span></div>
+      <div class="glass soon-card mb-12"><div class="sc-icon">💬</div><div class="sc-info"><h3>Live Chat</h3><p>Chat during co-op missions.</p></div><span class="soon-badge">Coming Soon</span></div>
+      <div class="glass soon-card mb-12"><div class="sc-icon">🎙️</div><div class="sc-info"><h3>Voice Chat</h3><p>Talk through tricky site decisions live.</p></div><span class="soon-badge">Coming Soon</span></div>
+      <div class="glass soon-card mb-12"><div class="sc-icon">✉️</div><div class="sc-info"><h3>Invite Friends</h3><p>Share a link, grow your crew.</p></div><span class="soon-badge">Coming Soon</span></div>
+      <div class="glass soon-card mb-12"><div class="sc-icon">🤝</div><div class="sc-info"><h3>Co-op Missions</h3><p>Split roles on the same scenario.</p></div><span class="soon-badge">Coming Soon</span></div>
+      <div class="glass soon-card mb-12"><div class="sc-icon">🏢</div><div class="sc-info"><h3>Clan System</h3><p>Construction Company, Mentor &amp; University teams.</p></div><span class="soon-badge">Coming Soon</span></div>
+
+      <div class="eco-panel glass">
+        <div class="eco-title">🔗 Explore the IndustrCons Ecosystem</div>
+        <a class="eco-link" href="https://industrcons-knowledge-center.vercel.app/" target="_blank" rel="noopener">
+          <span class="eco-ic">📚</span><span class="eco-text"><b>Related Knowledge</b><span>Standards, terms & guides — Knowledge Center</span></span><span class="eco-arrow">↗</span>
+        </a>
+        <a class="eco-link" href="https://industrconsdocs.netlify.app/" target="_blank" rel="noopener">
+          <span class="eco-ic">📄</span><span class="eco-text"><b>Related Documents</b><span>HSE, QA/QC & PDF templates — IndustrCons Docs</span></span><span class="eco-arrow">↗</span>
+        </a>
+        <a class="eco-link" href="https://industrcons-ai.vercel.app/" target="_blank" rel="noopener">
+          <span class="eco-ic">🤖</span><span class="eco-text"><b>Ask IndustrCons AI</b><span>Get help finding the right tool</span></span><span class="eco-arrow">↗</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ============ CERTIFICATE ============ -->
+    <section class="screen" id="screen-certificate">
+      <div class="flex items-center gap-10 mb-16">
+        <button class="icon-btn" id="btnCertBack">←</button>
+        <div class="section-title" style="margin:0; flex:1;">Certificate of Completion</div>
+      </div>
+      <div class="glass certificate" id="certificateBody">
+        <div class="cert-seal">🏅</div>
+        <h2>IndustrCons Games</h2>
+        <h3 id="certCareerName">Career Track</h3>
+        <p>This certifies that</p>
+        <p style="font-size:18px; color:var(--gold); font-family:'Orbitron'; margin:8px 0;" id="certPlayerName">Engineer</p>
+        <p id="certDetail">has completed all 9 stages.</p>
+        <p style="margin-top:14px; font-size:11px;" id="certDate">—</p>
+      </div>
+      <button class="btn btn-primary btn-block" id="btnPrintCert" style="margin-top:16px;">🖨️ Print / Save as PDF</button>
     </section>
 
   </main>
@@ -371,6 +524,7 @@
 </div>
 
 <div class="toast" id="toast"></div>
+<canvas id="confettiCanvas"></canvas>
 
 <script src="js/data.js"></script>
 <script src="js/minigames.js"></script>
